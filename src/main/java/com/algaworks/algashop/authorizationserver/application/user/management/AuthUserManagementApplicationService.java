@@ -34,7 +34,7 @@ public class AuthUserManagementApplicationService {
                 passwordHash
         );
 
-        return AuthUserOutput.from(user);
+        return AuthUserOutput.from(authUserRepository.save(user));
     }
 
 }

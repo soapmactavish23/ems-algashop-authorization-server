@@ -46,7 +46,7 @@ public class AuthUser extends AbstractAuditableAggregateRoot<AuthUser> {
         user.setName(name);
         user.setType(type);
         user.setPassword(passwordHash);
-
+        user.setEnabled(true);
 
         return user;
     }
