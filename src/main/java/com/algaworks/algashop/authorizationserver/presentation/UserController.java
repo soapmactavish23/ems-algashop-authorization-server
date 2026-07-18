@@ -2,7 +2,7 @@ package com.algaworks.algashop.authorizationserver.presentation;
 
 import com.algaworks.algashop.authorizationserver.application.user.management.AuthUserInput;
 import com.algaworks.algashop.authorizationserver.application.user.management.AuthUserManagementApplicationService;
-import com.algaworks.algashop.authorizationserver.application.user.management.AuthUserOutput;
+import com.algaworks.algashop.authorizationserver.application.user.query.AuthUserOutput;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

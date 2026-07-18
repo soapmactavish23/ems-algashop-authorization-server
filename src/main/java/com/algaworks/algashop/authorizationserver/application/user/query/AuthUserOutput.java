@@ -1,4 +1,4 @@
-package com.algaworks.algashop.authorizationserver.application.user.management;
+package com.algaworks.algashop.authorizationserver.application.user.query;
 
 import com.algaworks.algashop.authorizationserver.domain.model.user.AuthUser;
 import com.algaworks.algashop.authorizationserver.domain.model.user.AuthUserType;

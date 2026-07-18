@@ -1,5 +1,6 @@
 package com.algaworks.algashop.authorizationserver.application.user.management;
 
+import com.algaworks.algashop.authorizationserver.application.user.query.AuthUserOutput;
 import com.algaworks.algashop.authorizationserver.domain.model.user.AuthUser;
 import com.algaworks.algashop.authorizationserver.domain.model.user.AuthUserRepository;
 import lombok.RequiredArgsConstructor;
