@@ -1,7 +1,6 @@
 spring:
   session:
     store-type: jdbc
-    timeout: 30m
   datasource:
     url: jdbc:postgresql://localhost:5432/authorization_server
     username: postgres
@@ -75,7 +74,7 @@ spring:
                 - http://algashop.local:9080/login/oauth2/code/algashop-ecommerce-web
                 - https://oauth.pstmn.io/v1/callback
               post-logout-redirect-uris:
-                - http://algashop.local:9080?logout-sucess
+                - http://algashop.local:9080?logout-success
               scopes:
                 - credit-cards:read
                 - credit-cards:write
@@ -107,9 +106,9 @@ spring:
                 - customers:write
             token:
               access-token-time-to-live: 15m
-          admin.algashop.local-web-client:
+          algashop-admin-web-client:
             registration:
-              client-id: admin.algashop.local-web
+              client-id: algashop-admin-web
               client-name: AlgaShop Admin
               authorization-grant-types:
                 - authorization_code
@@ -118,6 +117,7 @@ spring:
               redirect-uris:
                 - http://admin.algashop.local:4200
                 - http://admin.algashop.local:4200/silent-refresh.html
+                - https://oauth.pstmn.io/v1/callback
               post-logout-redirect-uris:
                 - http://admin.algashop.local:4200
               scopes:
@@ -145,13 +145,11 @@ algashop:
       allowedOrigins:
         - http://admin.algashop.local:4200
     cookie:
-      secure: false # HTTPS
-      sameSite: Lax # None, Lax, Strict
+      secure: false # true = https
+      sameSite: Lax #None, Lax, Strict
       domainName: algashop.local
     csp:
-      policyDirectives: frame-ancestors 'self' http://admin.algashop.local:4200 http://auth.algashop.local:4200
-
-
+      policyDirectives: frame-ancestors 'self' http://admin.algashop.local:4200 http://auth.algashop.local:8081
 logging:
   level:
     org.springframework.security: TRACE
