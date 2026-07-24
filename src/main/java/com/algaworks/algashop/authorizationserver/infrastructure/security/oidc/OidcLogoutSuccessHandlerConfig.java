@@ -9,7 +9,7 @@ public class OidcLogoutSuccessHandlerConfig {
 
     @Bean
     public OidcLogoutAuthenticationSuccessHandler oidcLogoutAuthenticationSuccessHandler(
-            OidcRevokeAuthorizationLogoutHandler logoutHandler
+            OdicRevokeAuthorizationsLogoutHandler logoutHandler
     ) {
         var logoutSuccessHandler = new OidcLogoutAuthenticationSuccessHandler();
         logoutSuccessHandler.setLogoutHandler(logoutHandler);

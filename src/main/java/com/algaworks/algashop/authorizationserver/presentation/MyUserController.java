@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/api/v1/users/me")
+@RequiredArgsConstructor
 public class MyUserController {
 
     private final SecurityCheckApplicationService securityCheck;
@@ -20,7 +20,7 @@ public class MyUserController {
     @GetMapping
     @SecurityAnnotations.CanAccessOwnProfile
     public AuthUserOutput getMe() {
-        return queryService.findById(securityCheck.getAuthenticadeUserId());
+        return queryService.findById(securityCheck.getAuthenticatedUserId());
     }
 
 }

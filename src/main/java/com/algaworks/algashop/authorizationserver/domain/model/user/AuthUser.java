@@ -4,9 +4,6 @@ import com.algaworks.algashop.authorizationserver.domain.model.AbstractAuditable
 import com.algaworks.algashop.authorizationserver.domain.model.DomainException;
 import com.algaworks.algashop.authorizationserver.domain.model.IdGenerator;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -16,11 +13,11 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.Objects;
 import java.util.UUID;
 
-@Getter
 @Entity
 @Table(name = "auth_user")
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class AuthUser extends AbstractAuditableAggregateRoot<AuthUser> {
 
     @Id
@@ -35,9 +32,9 @@ public class AuthUser extends AbstractAuditableAggregateRoot<AuthUser> {
     @Enumerated(EnumType.STRING)
     private AuthUserType type;
 
-    public static AuthUser brandNew(@NotBlank @Email String email,
-                                    @NotBlank String name,
-                                    @NotNull AuthUserType type,
+    public static AuthUser brandNew(String email,
+                                    String name,
+                                    AuthUserType type,
                                     String passwordHash) {
         AuthUser user = new AuthUser();
 
@@ -51,15 +48,21 @@ public class AuthUser extends AbstractAuditableAggregateRoot<AuthUser> {
         return user;
     }
 
+    public void anonymize() {
+        this.setName("Anonymized User");
+        this.setEmail("anonymized-" + this.id + "@deleted.local");
+        this.setEnabled(false);
+    }
+
     public void setPassword(String password) {
-        if(StringUtils.isBlank(password)) {
+        if (StringUtils.isBlank(password)) {
             throw new IllegalArgumentException();
         }
         this.password = password;
     }
 
     public void setName(String name) {
-        if(StringUtils.isBlank(name)) {
+        if (StringUtils.isBlank(name)) {
             throw new IllegalArgumentException();
         }
         this.name = name;
@@ -71,7 +74,7 @@ public class AuthUser extends AbstractAuditableAggregateRoot<AuthUser> {
 
     public void setType(AuthUserType type) {
         Objects.requireNonNull(type);
-        if(this.type == AuthUserType.CUSTOMER) {
+        if (this.type == AuthUserType.CUSTOMER) {
             throw new DomainException("Cannot change type of a CUSTOMER user");
         }
         this.type = type;
@@ -83,7 +86,7 @@ public class AuthUser extends AbstractAuditableAggregateRoot<AuthUser> {
     }
 
     private void setEmail(String email) {
-        if(StringUtils.isBlank(email)) {
+        if (StringUtils.isBlank(email)) {
             throw new IllegalArgumentException();
         }
         this.email = email;

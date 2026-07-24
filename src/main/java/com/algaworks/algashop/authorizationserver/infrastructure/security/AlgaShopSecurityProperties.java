@@ -13,37 +13,30 @@ import org.springframework.validation.annotation.Validated;
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 @Data
 @Validated
-@Component
-@NoArgsConstructor
 @ConfigurationProperties("algashop.security")
+@NoArgsConstructor
 public class AlgaShopSecurityProperties {
 
-    @Valid
     @NotNull
+    @Valid
     private CorsProperties cors;
 
-    @Valid
     @NotNull
-    private CspProperties csp;
-
     @Valid
-    @NotNull
     private CookieProperties cookie;
+
+    @NotNull
+    @Valid
+    private CspProperties csp;
 
     @Data
     @NoArgsConstructor
     public static class CorsProperties {
         @NotEmpty
         private List<String> allowedOrigins = new ArrayList<>();
-    }
-
-    @Data
-    @NoArgsConstructor
-    public static class CspProperties {
-        @NotBlank
-        private String policyDirectives;
     }
 
     @Data
@@ -56,4 +49,11 @@ public class AlgaShopSecurityProperties {
         @NotNull
         private Boolean secure;
     }
+
+    @Data
+    @NoArgsConstructor
+    public static class CspProperties {
+        private String policyDirectives;
+    }
+
 }

@@ -13,7 +13,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Configuration
-@EnableJpaAuditing(dateTimeProviderRef = "auditingDateTimeProvider", auditorAwareRef = "auditorProvider")
+@EnableJpaAuditing(
+        dateTimeProviderRef = "auditingDateTimeProvider",
+        auditorAwareRef = "auditorProvider"
+)
 public class SpringDataAuditingConfig {
 
     @Bean
@@ -24,10 +27,10 @@ public class SpringDataAuditingConfig {
     @Bean
     public AuditorAware<UUID> auditorProvider(SecurityCheckApplicationService securityCheck) {
         return () -> {
-            if(!securityCheck.isAuthenticated() || securityCheck.isMachineAuthenticated()) {
+            if (!securityCheck.isAuthenticated() || securityCheck.isMachineAuthenticated()) {
                 return Optional.empty();
             }
-            return Optional.of(securityCheck.getAuthenticadeUserId());
+            return Optional.of(securityCheck.getAuthenticatedUserId());
         };
     }
 

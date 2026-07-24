@@ -17,7 +17,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class OidcRevokeAuthorizationLogoutHandler implements LogoutHandler {
+public class OdicRevokeAuthorizationsLogoutHandler implements LogoutHandler {
 
     private final OAuth2AuthorizationQueryService auth2AuthorizationQueryService;
     private final OAuth2AuthorizationService authorizationService;
@@ -27,12 +27,12 @@ public class OidcRevokeAuthorizationLogoutHandler implements LogoutHandler {
     public void logout(HttpServletRequest request,
                        HttpServletResponse response,
                        @Nullable Authentication authentication) {
-        if(authentication == null || authentication.getName() == null) {
+        if (authentication == null || authentication.getName() == null) {
             return;
         }
 
         performLogout(request, response, authentication);
-        revokeAuthentications(authentication);
+        revokeAuthorizations(authentication);
     }
 
     private void performLogout(HttpServletRequest request, HttpServletResponse response,
@@ -44,12 +44,12 @@ public class OidcRevokeAuthorizationLogoutHandler implements LogoutHandler {
         }
     }
 
-    private void revokeAuthentications(@Nullable Authentication authentication) {
+    private void revokeAuthorizations(@Nullable Authentication authentication) {
         String email = authentication.getName();
         List<String> authorizationIds = auth2AuthorizationQueryService.findAuthorizationIds(email);
-        for(String authorizationId : authorizationIds) {
+        for (String authorizationId : authorizationIds) {
             OAuth2Authorization authorization = authorizationService.findById(authorizationId);
-            if(authorization != null) {
+            if (authorization != null) {
                 authorizationService.remove(authorization);
             }
         }

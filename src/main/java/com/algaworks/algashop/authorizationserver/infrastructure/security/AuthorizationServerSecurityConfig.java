@@ -40,9 +40,10 @@ public class AuthorizationServerSecurityConfig {
                 })
                 .with(authorizationServer, configurer ->
                         configurer.oidc(oidc -> oidc
-                                .logoutEndpoint(logout -> logout.logoutResponseHandler(oidcLogoutAuthenticationSuccessHandler))
+                                .logoutEndpoint(logout ->
+                                        logout.logoutResponseHandler(oidcLogoutAuthenticationSuccessHandler))
                                 .userInfoEndpoint(
-                                userInfo -> userInfo.userInfoMapper(oidcUserInfoMapper))))
+                                        userInfo -> userInfo.userInfoMapper(oidcUserInfoMapper))))
                 .authorizeHttpRequests(authorize -> authorize.anyRequest().authenticated())
                 .exceptionHandling(
                         exceptions -> exceptions.defaultAuthenticationEntryPointFor(
@@ -53,6 +54,7 @@ public class AuthorizationServerSecurityConfig {
 
         return http.build();
     }
+
     @Bean
     @Order(2)
     public SecurityFilterChain apiSecurityFilterChain(HttpSecurity http) {

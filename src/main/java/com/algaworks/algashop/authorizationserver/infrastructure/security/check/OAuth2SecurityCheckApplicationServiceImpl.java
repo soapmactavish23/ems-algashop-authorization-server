@@ -3,7 +3,6 @@ package com.algaworks.algashop.authorizationserver.infrastructure.security.check
 import com.algaworks.algashop.authorizationserver.application.security.SecurityCheckApplicationService;
 import com.algaworks.algashop.authorizationserver.domain.model.user.AuthUserType;
 import lombok.extern.slf4j.Slf4j;
-import org.jspecify.annotations.Nullable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,19 +12,19 @@ import org.springframework.stereotype.Service;
 import java.util.Objects;
 import java.util.UUID;
 
-@Slf4j
 @Service("securityCheck")
-public class OAuth2SecurityCheckApplicationServiceImpl implements SecurityCheckApplicationService {
+@Slf4j
+public class OAuth2SecurityCheckApplicationServiceImpl
+        implements SecurityCheckApplicationService {
 
     private static final String SCOPE_USERS_WRITE = "SCOPE_users:write";
     private static final String ROLE_MANAGER = "ROLE_" + AuthUserType.MANAGER.name();
 
     @Override
-    public UUID getAuthenticadeUserId() {
-        if(isMachineAuthenticated()) {
+    public UUID getAuthenticatedUserId() {
+        if (isMachineAuthenticated()) {
             throw new AccessDeniedException("Machine users do not have user ID");
         }
-
         Jwt jwt = getJwt();
 
         try {
@@ -65,19 +64,19 @@ public class OAuth2SecurityCheckApplicationServiceImpl implements SecurityCheckA
 
     @Override
     public boolean canRegisterUserOfType(AuthUserType registrationType) {
-        if(!isAuthenticated()) {
+        if (!isAuthenticated()) {
             return false;
         }
 
-        if(!hasAuthority(SCOPE_USERS_WRITE)) {
+        if (!hasAuthority(SCOPE_USERS_WRITE)) {
             return false;
         }
 
-        if(registrationType == AuthUserType.CUSTOMER) {
+        if (registrationType == AuthUserType.CUSTOMER) {
             return isMachineAuthenticated();
         }
 
-        if(hasAuthority(ROLE_MANAGER)) {
+        if (hasAuthority(ROLE_MANAGER)) {
             return registrationType == AuthUserType.MANAGER
                     || registrationType == AuthUserType.OPERATOR;
         }
@@ -87,7 +86,6 @@ public class OAuth2SecurityCheckApplicationServiceImpl implements SecurityCheckA
 
     private boolean hasAuthority(String rawAuthority) {
         Authentication authentication;
-
         try {
             authentication = getAuthentication();
         } catch (IllegalStateException e) {
@@ -101,16 +99,16 @@ public class OAuth2SecurityCheckApplicationServiceImpl implements SecurityCheckA
 
     private Jwt getJwt() {
         Authentication authentication = getAuthentication();
-        if(authentication.getPrincipal() instanceof Jwt jwt) {
+        if (authentication.getPrincipal() instanceof Jwt jwt) {
             return jwt;
         }
-        throw new IllegalArgumentException("Authentication principal is not a JWT");
+        throw new IllegalStateException("Authentication principal is not a JWT");
     }
 
-    private @Nullable Authentication getAuthentication() {
+    private Authentication getAuthentication() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication == null) {
-            throw new IllegalArgumentException("No authentication found");
+        if (authentication == null) {
+            throw new IllegalStateException("No authentication found");
         }
         return authentication;
     }
