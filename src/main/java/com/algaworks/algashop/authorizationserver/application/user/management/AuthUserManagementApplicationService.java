@@ -52,6 +52,8 @@ public class AuthUserManagementApplicationService {
         AuthUser user = authUserRepository.findById(userId)
                 .orElseThrow(() -> new AuthUserNotFoundException(userId));
 
+        verifyCanEditUser(user, input);
+
         user.setName(input.getName());
         user.setType(input.getType());
         user.setEnabled(input.isEnabled());
@@ -64,6 +66,16 @@ public class AuthUserManagementApplicationService {
                 .orElseThrow(() -> new AuthUserNotFoundException(userId));
         user.anonymize();
         authUserRepository.save(user);
+    }
+
+    private void verifyCanEditUser(AuthUser authUser, AuthUserUpdateInput input) {
+        if(!securityCheck.canEditUser(authUser.getType(), authUser.getId())) {
+            throw new AccessDeniedException("Cannot edit user of type " + authUser.getType());
+        }
+
+        if(!securityCheck.canChangeUserType(authUser.getType(), input.getType())) {
+            throw new AccessDeniedException("Cannot change user type to " + input.getType());
+        }
     }
 
 }
