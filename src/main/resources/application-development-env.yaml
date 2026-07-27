@@ -72,6 +72,7 @@ spring:
                 - client_secret_basic
               redirect-uris:
                 - http://algashop.local:9080/login/oauth2/code/algashop-ecommerce-web
+                - https://oauth.pstmn.io/v1/callback
               post-logout-redirect-uris:
                 - http://algashop.local:9080?logout-success
               scopes:
@@ -85,7 +86,12 @@ spring:
                 - shopping-carts:write
                 - openid
             require-authorization-consent: true
-            require-proof-key: false
+            require-proof-key: false #PKCE
+            token:
+              access-token-time-to-live: 5m
+              authorization-code-time-to-live: 10m
+              refresh-token-time-to-live: 1h
+              reuse-refresh-tokens: false
           algashop-ecommerce-m2m-client:
             registration:
               client-id: algashop-ecommerce-m2m
