@@ -45,13 +45,15 @@ public class AuthorizationServerSecurityConfig {
                     var csp = properties.getCsp();
                     headers.contentSecurityPolicy(c -> c.policyDirectives(csp.getPolicyDirectives()));
                 })
-                .with(authorizationServer, configurer ->
-                        configurer.oidc(oidc -> oidc
+                .with(authorizationServer, configurer -> configurer
+                        .oidc(oidc -> oidc
                                 .logoutEndpoint(logout ->
                                         logout.logoutResponseHandler(oidcLogoutAuthenticationSuccessHandler))
                                 .userInfoEndpoint(
                                         userInfo -> userInfo.userInfoMapper(oidcUserInfoMapper)))
-                                .authorizationEndpoint(endpoint -> endpoint.authenticationProviders(this::customerAuthenticationProviders))
+                                .authorizationEndpoint(endpoint ->
+                                        endpoint.authenticationProviders(this::customerAuthenticationProviders)
+                                                .consentPage("/oauth2/consent"))
                 )
                 .authorizeHttpRequests(authorize -> authorize.anyRequest().authenticated())
                 .exceptionHandling(
