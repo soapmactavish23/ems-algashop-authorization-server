@@ -35,7 +35,9 @@ public class AuthUserClientAccessPolicyValidator
                 = context.getAuthentication();
         Authentication principal = (Authentication) authentication.getPrincipal();
 
-        if (principal == null || !principal.isAuthenticated() || principal instanceof AnonymousAuthenticationToken) {
+        if (principal == null
+                || !principal.isAuthenticated()
+                || principal instanceof AnonymousAuthenticationToken) {
             return;
         }
 
@@ -47,24 +49,21 @@ public class AuthUserClientAccessPolicyValidator
 
         if (!canUseClient(authUser.getType(), clientId)) {
             OAuth2Error error = new OAuth2Error(OAuth2ErrorCodes.ACCESS_DENIED,
-                    "The authenticated user type is not allowed to authorized this client.",
-                    null);
-
+                    "The authenticated user type is not allowed " +
+                            "to authorized this client.", null);
             var codeRequest = buildCodeRequest(authentication, principal);
             throw new OAuth2AuthorizationCodeRequestAuthenticationException(error, codeRequest);
         }
 
         Set<String> unauthorizedScopes = getUnauthorizedScopes(authentication, authUser.getType());
 
-        if (!canUseClient(authUser.getType(), clientId)) {
+        if (!unauthorizedScopes.isEmpty()) {
             OAuth2Error error = new OAuth2Error(OAuth2ErrorCodes.INVALID_SCOPE,
-                    "The authenticated user type is not allowed to use this scopes: " + unauthorizedScopes,
-                    null);
-
+                    "The authenticated user type is not " +
+                            "allowed to use this scopes: " + unauthorizedScopes, null);
             var codeRequest = buildCodeRequest(authentication, principal);
             throw new OAuth2AuthorizationCodeRequestAuthenticationException(error, codeRequest);
         }
-
     }
 
     private Set<String> getUnauthorizedScopes(
