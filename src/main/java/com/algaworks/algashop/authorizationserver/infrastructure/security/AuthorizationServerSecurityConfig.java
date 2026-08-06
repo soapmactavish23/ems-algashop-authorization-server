@@ -53,9 +53,10 @@ public class AuthorizationServerSecurityConfig {
                                         logout.logoutResponseHandler(oidcLogoutAuthenticationSuccessHandler))
                                 .userInfoEndpoint(
                                         userInfo -> userInfo.userInfoMapper(oidcUserInfoMapper)))
-                                .authorizationEndpoint(endpoint ->
-                                        endpoint.authenticationProviders(this::customerAuthenticationProviders)
-                                                .consentPage("/oauth2/consent"))
+                        .authorizationEndpoint(endpoint ->
+                                endpoint.authenticationProviders(this::customizeAuthenticationProviders)
+                                        .consentPage("/oauth2/consent")
+                        )
                 )
                 .authorizeHttpRequests(authorize -> authorize.anyRequest().authenticated())
                 .exceptionHandling(
@@ -66,6 +67,14 @@ public class AuthorizationServerSecurityConfig {
                 );
 
         return http.build();
+    }
+
+    private void customizeAuthenticationProviders(
+            List<AuthenticationProvider> authenticationProviders) {
+        authenticationProviders.stream()
+                .filter(OAuth2AuthorizationCodeRequestAuthenticationProvider.class::isInstance)
+                .map(OAuth2AuthorizationCodeRequestAuthenticationProvider.class::cast)
+                .forEach(provider -> provider.setAuthenticationValidator(delegatingAuthorizationCodeRequestValidator));
     }
 
     @Bean
@@ -99,20 +108,14 @@ public class AuthorizationServerSecurityConfig {
     @Order(4)
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) {
         http.authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/login", "/forgot-password", "/css/**",
+                        .requestMatchers("/login", "/css/**",
                                 "/js/**", "/img/**", "/favicon.ico").permitAll()
-                        .anyRequest().authenticated())
+                        .anyRequest().authenticated()
+                )
                 .formLogin(c -> c.loginPage("/login")
                         .defaultSuccessUrl(properties.getDefaultRedirectUri())
                         .permitAll());
         return http.build();
-    }
-
-    private void customerAuthenticationProviders(List<AuthenticationProvider> authenticationProviders) {
-        authenticationProviders.stream()
-                .filter(OAuth2AuthorizationCodeRequestAuthenticationProvider.class::isInstance)
-                .map(OAuth2AuthorizationCodeRequestAuthenticationProvider.class::cast)
-                .forEach(provider -> provider.setAuthenticationValidator(delegatingAuthorizationCodeRequestValidator));
     }
 
 }

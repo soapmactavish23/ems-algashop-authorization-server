@@ -14,7 +14,8 @@ import java.util.UUID;
 
 @Service("securityChecks")
 @Slf4j
-public class OAuth2SecurityChecksImpl implements SecurityChecks {
+public class OAuth2SecurityChecksImpl
+        implements SecurityChecks {
 
     private static final String SCOPE_USERS_WRITE = "SCOPE_users:write";
     private static final String ROLE_MANAGER = "ROLE_" + AuthUserType.MANAGER.name();
@@ -85,19 +86,19 @@ public class OAuth2SecurityChecksImpl implements SecurityChecks {
 
     @Override
     public boolean canEditUser(AuthUserType editType, UUID editUserId) {
-        if(isMachineAuthenticated()) {
+        if (isMachineAuthenticated()) {
             return false;
         }
 
         try {
-            if(getAuthenticatedUserId().equals(editUserId)) {
+            if (getAuthenticatedUserId().equals(editUserId)) {
                 return true;
             }
-        } catch (AccessDeniedException e) {
+        } catch (AccessDeniedException exception) {
             return false;
         }
 
-        if(hasAuthority(ROLE_MANAGER)) {
+        if (hasAuthority(ROLE_MANAGER)) {
             return editType == AuthUserType.MANAGER || editType == AuthUserType.OPERATOR;
         }
 
@@ -106,16 +107,16 @@ public class OAuth2SecurityChecksImpl implements SecurityChecks {
 
     @Override
     public boolean canChangeUserType(AuthUserType currentType, AuthUserType newType) {
-        if(currentType == newType) {
+        if (currentType == newType) {
             return true;
         }
 
-        if(hasAuthority(ROLE_MANAGER)) {
-            if(currentType == AuthUserType.MANAGER && newType == AuthUserType.OPERATOR) {
+        if (hasAuthority(ROLE_MANAGER)) {
+            if (currentType == AuthUserType.MANAGER && newType == AuthUserType.OPERATOR) {
                 return true;
             }
 
-            if(currentType == AuthUserType.OPERATOR && newType == AuthUserType.MANAGER) {
+            if (currentType == AuthUserType.OPERATOR && newType == AuthUserType.MANAGER) {
                 return true;
             }
         }
