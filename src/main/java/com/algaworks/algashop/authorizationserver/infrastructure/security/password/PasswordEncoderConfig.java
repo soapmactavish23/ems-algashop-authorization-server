@@ -13,14 +13,14 @@ import java.util.Map;
 @Configuration
 public class PasswordEncoderConfig {
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        Map<String, PasswordEncoder> encoders = new HashMap<>();
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		Map<String, PasswordEncoder> encoders = new HashMap<>();
 
-        encoders.put("bcrypt", new BCryptPasswordEncoder());
-        encoders.put("noop", NoOpPasswordEncoder.getInstance());
+		encoders.put("bcrypt", new BCryptPasswordEncoder());
+		encoders.put("noop", NoOpPasswordEncoder.getInstance());
 
-        return new DelegatingPasswordEncoder("bcrypt", encoders);
-    }
+		return new DelegatingPasswordEncoder("bcrypt", encoders);
+	}
 
 }

@@ -13,16 +13,16 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class JdbcClientAllowedQueryService implements ClientAllowedQueryService {
 
-    private static final String SQL = """
+	private static final String SQL = """
 			SELECT client_id
 			FROM auth_user_type_client_allowed
 			WHERE auth_user_type = ?
 			""";
 
-    private final JdbcOperations jdbcOperations;
+	private final JdbcOperations jdbcOperations;
 
-    @Override
-    public Set<String> findByRole(AuthUserType role) {
-        return new HashSet<>(jdbcOperations.queryForList(SQL, String.class, role.name()));
-    }
+	@Override
+	public Set<String> findByRole(AuthUserType role) {
+		return new HashSet<>(jdbcOperations.queryForList(SQL, String.class, role.name()));
+	}
 }

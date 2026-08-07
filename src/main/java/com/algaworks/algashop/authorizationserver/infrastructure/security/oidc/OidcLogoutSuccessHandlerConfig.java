@@ -7,13 +7,13 @@ import org.springframework.security.oauth2.server.authorization.oidc.web.authent
 @Configuration
 public class OidcLogoutSuccessHandlerConfig {
 
-    @Bean
-    public OidcLogoutAuthenticationSuccessHandler oidcLogoutAuthenticationSuccessHandler(
-            OdicRevokeAuthorizationsLogoutHandler logoutHandler
-    ) {
-        var logoutSuccessHandler = new OidcLogoutAuthenticationSuccessHandler();
-        logoutSuccessHandler.setLogoutHandler(logoutHandler);
-        return logoutSuccessHandler;
-    }
+	@Bean
+	public OidcLogoutAuthenticationSuccessHandler oidcLogoutAuthenticationSuccessHandler(
+			OdicRevokeAuthorizationsLogoutHandler logoutHandler
+	) {
+		var logoutSuccessHandler = new OidcLogoutAuthenticationSuccessHandler();
+		logoutSuccessHandler.setLogoutHandler(logoutHandler);
+		return logoutSuccessHandler;
+	}
 
 }

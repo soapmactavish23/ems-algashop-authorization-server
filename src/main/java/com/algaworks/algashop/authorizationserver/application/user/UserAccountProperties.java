@@ -18,29 +18,29 @@ import java.time.Duration;
 @NoArgsConstructor
 public class UserAccountProperties {
 
-    @NotNull
-    @Valid
-    private PasswordToken token;
+	@NotNull
+	@Valid
+	private PasswordToken token;
 
-    @NotNull
-    @Valid
-    private Mail mail;
+	@NotNull
+	@Valid
+	private Mail mail;
 
-    @Data
-    @NoArgsConstructor
-    public static class PasswordToken {
-        @NotNull
-        private Duration activationTtl;
-        @NotNull
-        private Duration passwordResetTtl;
-    }
+	@Data
+	@NoArgsConstructor
+	public static class PasswordToken {
+		@NotNull
+		private Duration activationTtl;
+		@NotNull
+		private Duration passwordResetTtl;
+	}
 
-    @Data
-    @NoArgsConstructor
-    public static class Mail {
-        @NotBlank
-        private String passwordChangeUrl;
-        @NotBlank
-        private String from;
-    }
+	@Data
+	@NoArgsConstructor
+	public static class Mail {
+		@NotBlank
+		private String passwordChangeUrl;
+		@NotBlank
+		private String from;
+	}
 }

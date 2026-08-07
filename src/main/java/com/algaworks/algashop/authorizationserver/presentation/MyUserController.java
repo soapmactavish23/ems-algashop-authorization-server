@@ -17,34 +17,34 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class MyUserController {
 
-    private final SecurityChecks securityCheck;
-    private final AuthUserQueryService queryService;
-    private final AuthUserManagementApplicationService managementService;
-    private final PasswordManagementApplicationService passwordManagementApplicationService;
+	private final SecurityChecks securityCheck;
+	private final AuthUserQueryService queryService;
+	private final AuthUserManagementApplicationService managementService;
+	private final PasswordManagementApplicationService passwordManagementApplicationService;
 
-    @GetMapping
-    @SecurityAnnotations.CanAccessOwnProfile
-    public AuthUserOutput getMe() {
-        return queryService.findById(securityCheck.getAuthenticatedUserId());
-    }
+	@GetMapping
+	@SecurityAnnotations.CanAccessOwnProfile
+	public AuthUserOutput getMe() {
+		return queryService.findById(securityCheck.getAuthenticatedUserId());
+	}
 
-    @PutMapping
-    @SecurityAnnotations.CanAccessOwnProfile
-    public AuthUserOutput updateMe(@RequestBody @Valid MyUserUpdateInput input) {
-        return managementService.update(securityCheck.getAuthenticatedUserId(), input);
-    }
+	@PutMapping
+	@SecurityAnnotations.CanAccessOwnProfile
+	public AuthUserOutput updateMe(@RequestBody @Valid MyUserUpdateInput input) {
+		return managementService.update(securityCheck.getAuthenticatedUserId(), input);
+	}
 
-    @DeleteMapping
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @SecurityAnnotations.CanDeleteOwnProfile
-    public void deleteMe() {
-        managementService.delete(securityCheck.getAuthenticatedUserId());
-    }
+	@DeleteMapping
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@SecurityAnnotations.CanDeleteOwnProfile
+	public void deleteMe() {
+		managementService.delete(securityCheck.getAuthenticatedUserId());
+	}
 
-    @PostMapping("/password-change")
-    @SecurityAnnotations.CanAccessOwnProfile
-    public void requestPasswordChange() {
-        passwordManagementApplicationService.requestPasswordChange(securityCheck.getAuthenticatedUserId());
-    }
+	@PostMapping("/password-change")
+	@SecurityAnnotations.CanAccessOwnProfile
+	public void requestPasswordChange() {
+		passwordManagementApplicationService.requestPasswordChange(securityCheck.getAuthenticatedUserId());
+	}
 
 }

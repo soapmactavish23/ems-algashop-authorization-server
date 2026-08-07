@@ -7,11 +7,11 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 @Configuration
 public class JwtAuthenticationConverterConfig {
 
-    @Bean
-    public JwtAuthenticationConverter jwtAuthenticationConverter(JwtGrantedAuthoritiesDelegatingConverter authoritiesDelegatingConverter) {
-        var jwtAuthenticationConverter = new JwtAuthenticationConverter();
-        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(authoritiesDelegatingConverter);
-        return jwtAuthenticationConverter;
-    }
+	@Bean
+	public JwtAuthenticationConverter jwtAuthenticationConverter(JwtGrantedAuthoritiesDelegatingConverter authoritiesDelegatingConverter) {
+		var jwtAuthenticationConverter = new JwtAuthenticationConverter();
+		jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(authoritiesDelegatingConverter);
+		return jwtAuthenticationConverter;
+	}
 
 }

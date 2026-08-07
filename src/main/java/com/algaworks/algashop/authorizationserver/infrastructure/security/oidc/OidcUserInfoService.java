@@ -11,19 +11,19 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class OidcUserInfoService {
 
-    private final AuthUserRepository authUserRepository;
+	private final AuthUserRepository authUserRepository;
 
-    public OidcUserInfo loadUser(String email) {
-        AuthUser authUser = authUserRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found " + email));
+	public OidcUserInfo loadUser(String email) {
+		AuthUser authUser = authUserRepository.findByEmail(email)
+				.orElseThrow(() -> new UsernameNotFoundException("User not found " + email));
 
-        return OidcUserInfo.builder()
-                .subject(authUser.getId().toString())
-                .name(authUser.getName())
-                .email(authUser.getEmail())
-                .claim("type", authUser.getType().name())
-                .claim("created_at", String.valueOf(authUser.getCreatedAt().toEpochSecond()))
-                .build();
-    }
+		return OidcUserInfo.builder()
+				.subject(authUser.getId().toString())
+				.name(authUser.getName())
+				.email(authUser.getEmail())
+				.claim("type", authUser.getType().name())
+				.claim("created_at", String.valueOf(authUser.getCreatedAt().toEpochSecond()))
+				.build();
+	}
 
 }

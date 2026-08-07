@@ -22,89 +22,89 @@ import java.util.UUID;
 @Transactional
 public class AuthUserManagementApplicationService {
 
-    private final AuthUserRepository authUserRepository;
-    private final SecurityChecks securityCheck;
-    private final UserAccountProperties userAccountProperties;
-    private final AuthUserPasswordManager passwordManager;
-    private final VerificationTokenHasher tokenHasher;
+	private final AuthUserRepository authUserRepository;
+	private final SecurityChecks securityCheck;
+	private final UserAccountProperties userAccountProperties;
+	private final AuthUserPasswordManager passwordManager;
+	private final VerificationTokenHasher tokenHasher;
 
-    private final AuthUserMailSender authUserMailSender;
+	private final AuthUserMailSender authUserMailSender;
 
-    public AuthUserOutput create(AuthUserInput input) {
-        if (!securityCheck.canRegisterUserOfType(input.getType())) {
-            throw new AccessDeniedException("Cannot register user of type " + input.getType());
-        }
+	public AuthUserOutput create(AuthUserInput input) {
+		if (!securityCheck.canRegisterUserOfType(input.getType())) {
+			throw new AccessDeniedException("Cannot register user of type " + input.getType());
+		}
 
-        if (authUserRepository.existsByEmail(input.getEmail())) {
-            throw new AuthUserEmailAlreadyInUseException(input.getEmail());
-        }
+		if (authUserRepository.existsByEmail(input.getEmail())) {
+			throw new AuthUserEmailAlreadyInUseException(input.getEmail());
+		}
 
-        AuthUser user = AuthUser.brandNew(
-                input.getEmail(),
-                input.getName(),
-                input.getType(),
-                passwordManager
-        );
+		AuthUser user = AuthUser.brandNew(
+				input.getEmail(),
+				input.getName(),
+				input.getType(),
+				passwordManager
+		);
 
-        String plainToken = user.generateVerificationToken(userAccountProperties.getToken().getActivationTtl(),
-                tokenHasher);
+		String plainToken = user.generateVerificationToken(userAccountProperties.getToken().getActivationTtl(),
+				tokenHasher);
 
-        authUserMailSender.sendActivationEmail(user, plainToken);
+		authUserMailSender.sendActivationEmail(user, plainToken);
 
-        return AuthUserOutput.from(authUserRepository.save(user));
-    }
+		return AuthUserOutput.from(authUserRepository.save(user));
+	}
 
-    public AuthUserOutput update(UUID userId, AuthUserUpdateInput input) {
-        AuthUser user = authUserRepository.findById(userId)
-                .orElseThrow(() -> new AuthUserNotFoundException(userId));
+	public AuthUserOutput update(UUID userId, AuthUserUpdateInput input) {
+		AuthUser user = authUserRepository.findById(userId)
+				.orElseThrow(() -> new AuthUserNotFoundException(userId));
 
-        verifyCanEditUser(user, input);
+		verifyCanEditUser(user, input);
 
-        user.setName(input.getName());
-        user.setType(input.getType());
-        user.setEnabled(input.isEnabled());
+		user.setName(input.getName());
+		user.setType(input.getType());
+		user.setEnabled(input.isEnabled());
 
-        return AuthUserOutput.from(authUserRepository.save(user));
-    }
+		return AuthUserOutput.from(authUserRepository.save(user));
+	}
 
-    public AuthUserOutput update(UUID userId, MyUserUpdateInput input) {
-        AuthUser user = authUserRepository.findById(userId)
-                .orElseThrow(() -> new AuthUserNotFoundException(userId));
+	public AuthUserOutput update(UUID userId, MyUserUpdateInput input) {
+		AuthUser user = authUserRepository.findById(userId)
+				.orElseThrow(() -> new AuthUserNotFoundException(userId));
 
-        if (!securityCheck.canEditUser(user.getType(), user.getId())) {
-            throw new AccessDeniedException("Cannot edit user");
-        }
+		if (!securityCheck.canEditUser(user.getType(), user.getId())) {
+			throw new AccessDeniedException("Cannot edit user");
+		}
 
-        user.setName(input.getName());
+		user.setName(input.getName());
 
-        return AuthUserOutput.from(authUserRepository.save(user));
-    }
+		return AuthUserOutput.from(authUserRepository.save(user));
+	}
 
-    private void verifyCanEditUser(AuthUser authUser, AuthUserUpdateInput input) {
-        if (!securityCheck.canEditUser(authUser.getType(), authUser.getId())) {
-            throw new AccessDeniedException("Cannot edit user of type " + authUser.getType());
-        }
+	private void verifyCanEditUser(AuthUser authUser, AuthUserUpdateInput input) {
+		if (!securityCheck.canEditUser(authUser.getType(), authUser.getId())) {
+			throw new AccessDeniedException("Cannot edit user of type " + authUser.getType());
+		}
 
-        if (!securityCheck.canChangeUserType(authUser.getType(), input.getType())) {
-            throw new AccessDeniedException("Cannot change user type to " + input.getType());
-        }
-    }
+		if (!securityCheck.canChangeUserType(authUser.getType(), input.getType())) {
+			throw new AccessDeniedException("Cannot change user type to " + input.getType());
+		}
+	}
 
-    public void delete(UUID userId) {
-        AuthUser user = authUserRepository.findById(userId)
-                .orElseThrow(() -> new AuthUserNotFoundException(userId));
+	public void delete(UUID userId) {
+		AuthUser user = authUserRepository.findById(userId)
+				.orElseThrow(() -> new AuthUserNotFoundException(userId));
 
-        verifyCanArchiveOwnUser(user);
+		verifyCanArchiveOwnUser(user);
 
-        user.anonymize();
-        authUserRepository.save(user);
-    }
+		user.anonymize();
+		authUserRepository.save(user);
+	}
 
-    private void verifyCanArchiveOwnUser(AuthUser user) {
-        if (securityCheck.getAuthenticatedUserId().equals(user.getId()) &&
-                user.getType() != AuthUserType.CUSTOMER) {
-            throw new AccessDeniedException("Only CUSTOMER users can delete their own profile");
-        }
-    }
+	private void verifyCanArchiveOwnUser(AuthUser user) {
+		if (securityCheck.getAuthenticatedUserId().equals(user.getId()) &&
+				user.getType() != AuthUserType.CUSTOMER) {
+			throw new AccessDeniedException("Only CUSTOMER users can delete their own profile");
+		}
+	}
 
 }

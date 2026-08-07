@@ -12,18 +12,18 @@ import java.util.Arrays;
 @Configuration
 public class CorsConfig {
 
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource(AlgaShopSecurityProperties properties) {
-        CorsConfiguration cors = new CorsConfiguration();
+	@Bean
+	public CorsConfigurationSource corsConfigurationSource(AlgaShopSecurityProperties properties) {
+		CorsConfiguration cors = new CorsConfiguration();
 
-        cors.setAllowedOrigins(properties.getCors().getAllowedOrigins());
-        cors.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        cors.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
-        cors.setAllowCredentials(true);
+		cors.setAllowedOrigins(properties.getCors().getAllowedOrigins());
+		cors.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+		cors.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
+		cors.setAllowCredentials(true);
 
-        var source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", cors);
-        return source;
-    }
+		var source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", cors);
+		return source;
+	}
 
 }

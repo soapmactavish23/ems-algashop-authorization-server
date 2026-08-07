@@ -15,141 +15,141 @@ import java.util.UUID;
 @Service("securityChecks")
 @Slf4j
 public class OAuth2SecurityChecksImpl
-        implements SecurityChecks {
+		implements SecurityChecks {
 
-    private static final String SCOPE_USERS_WRITE = "SCOPE_users:write";
-    private static final String ROLE_MANAGER = "ROLE_" + AuthUserType.MANAGER.name();
+	private static final String SCOPE_USERS_WRITE = "SCOPE_users:write";
+	private static final String ROLE_MANAGER = "ROLE_" + AuthUserType.MANAGER.name();
 
-    @Override
-    public UUID getAuthenticatedUserId() {
-        if (isMachineAuthenticated()) {
-            throw new AccessDeniedException("Machine users do not have user ID");
-        }
-        Jwt jwt = getJwt();
+	@Override
+	public UUID getAuthenticatedUserId() {
+		if (isMachineAuthenticated()) {
+			throw new AccessDeniedException("Machine users do not have user ID");
+		}
+		Jwt jwt = getJwt();
 
-        try {
-            return UUID.fromString(jwt.getSubject());
-        } catch (IllegalAccessError e) {
-            log.error("Invalid user ID in JWT subject: {}", jwt.getSubject(), e);
-            throw new AccessDeniedException("Invalid user ID in JWT subject");
-        }
-    }
+		try {
+			return UUID.fromString(jwt.getSubject());
+		} catch (IllegalAccessError e) {
+			log.error("Invalid user ID in JWT subject: {}", jwt.getSubject(), e);
+			throw new AccessDeniedException("Invalid user ID in JWT subject");
+		}
+	}
 
-    @Override
-    public boolean isAuthenticated() {
-        try {
-            return getAuthentication().isAuthenticated();
-        } catch (IllegalStateException e) {
-            log.debug(e.getMessage(), e);
-            return false;
-        }
-    }
+	@Override
+	public boolean isAuthenticated() {
+		try {
+			return getAuthentication().isAuthenticated();
+		} catch (IllegalStateException e) {
+			log.debug(e.getMessage(), e);
+			return false;
+		}
+	}
 
-    @Override
-    public boolean isMachineAuthenticated() {
-        Jwt jwt;
-        try {
-            jwt = getJwt();
-        } catch (IllegalStateException e) {
-            log.debug(e.getMessage(), e);
-            return false;
-        }
-        return jwt.getAudience().contains(jwt.getSubject());
-    }
+	@Override
+	public boolean isMachineAuthenticated() {
+		Jwt jwt;
+		try {
+			jwt = getJwt();
+		} catch (IllegalStateException e) {
+			log.debug(e.getMessage(), e);
+			return false;
+		}
+		return jwt.getAudience().contains(jwt.getSubject());
+	}
 
-    @Override
-    public boolean canAccessOwnProfile() {
-        return this.isAuthenticated() && !isMachineAuthenticated();
-    }
+	@Override
+	public boolean canAccessOwnProfile() {
+		return this.isAuthenticated() && !isMachineAuthenticated();
+	}
 
-    @Override
-    public boolean canRegisterUserOfType(AuthUserType registrationType) {
-        if (!isAuthenticated()) {
-            return false;
-        }
+	@Override
+	public boolean canRegisterUserOfType(AuthUserType registrationType) {
+		if (!isAuthenticated()) {
+			return false;
+		}
 
-        if (!hasAuthority(SCOPE_USERS_WRITE)) {
-            return false;
-        }
+		if (!hasAuthority(SCOPE_USERS_WRITE)) {
+			return false;
+		}
 
-        if (registrationType == AuthUserType.CUSTOMER) {
-            return isMachineAuthenticated();
-        }
+		if (registrationType == AuthUserType.CUSTOMER) {
+			return isMachineAuthenticated();
+		}
 
-        if (hasAuthority(ROLE_MANAGER)) {
-            return registrationType == AuthUserType.MANAGER
-                    || registrationType == AuthUserType.OPERATOR;
-        }
+		if (hasAuthority(ROLE_MANAGER)) {
+			return registrationType == AuthUserType.MANAGER
+					|| registrationType == AuthUserType.OPERATOR;
+		}
 
-        return false;
-    }
+		return false;
+	}
 
-    @Override
-    public boolean canEditUser(AuthUserType editType, UUID editUserId) {
-        if (isMachineAuthenticated()) {
-            return false;
-        }
+	@Override
+	public boolean canEditUser(AuthUserType editType, UUID editUserId) {
+		if (isMachineAuthenticated()) {
+			return false;
+		}
 
-        try {
-            if (getAuthenticatedUserId().equals(editUserId)) {
-                return true;
-            }
-        } catch (AccessDeniedException e) {
-            return false;
-        }
+		try {
+			if (getAuthenticatedUserId().equals(editUserId)) {
+				return true;
+			}
+		} catch (AccessDeniedException e) {
+			return false;
+		}
 
-        if (hasAuthority(ROLE_MANAGER)) {
-            return editType == AuthUserType.MANAGER || editType == AuthUserType.OPERATOR;
-        }
+		if (hasAuthority(ROLE_MANAGER)) {
+			return editType == AuthUserType.MANAGER || editType == AuthUserType.OPERATOR;
+		}
 
-        return false;
-    }
+		return false;
+	}
 
-    @Override
-    public boolean canChangeUserType(AuthUserType currentType, AuthUserType newType) {
-        if (currentType == newType) {
-            return true;
-        }
+	@Override
+	public boolean canChangeUserType(AuthUserType currentType, AuthUserType newType) {
+		if (currentType == newType) {
+			return true;
+		}
 
-        if (hasAuthority(ROLE_MANAGER)) {
-            if (currentType == AuthUserType.MANAGER && newType == AuthUserType.OPERATOR) {
-                return true;
-            }
+		if (hasAuthority(ROLE_MANAGER)) {
+			if (currentType == AuthUserType.MANAGER && newType == AuthUserType.OPERATOR) {
+				return true;
+			}
 
-            if (currentType == AuthUserType.OPERATOR && newType == AuthUserType.MANAGER) {
-                return true;
-            }
-        }
+			if (currentType == AuthUserType.OPERATOR && newType == AuthUserType.MANAGER) {
+				return true;
+			}
+		}
 
-        return false;
-    }
+		return false;
+	}
 
-    private boolean hasAuthority(String rawAuthority) {
-        Authentication authentication;
-        try {
-            authentication = getAuthentication();
-        } catch (IllegalStateException e) {
-            log.debug(e.getMessage(), e);
-            return false;
-        }
+	private boolean hasAuthority(String rawAuthority) {
+		Authentication authentication;
+		try {
+			authentication = getAuthentication();
+		} catch (IllegalStateException e) {
+			log.debug(e.getMessage(), e);
+			return false;
+		}
 
-        return authentication.getAuthorities()
-                .stream().anyMatch(a -> Objects.equals(a.getAuthority(), rawAuthority));
-    }
+		return authentication.getAuthorities()
+				.stream().anyMatch(a -> Objects.equals(a.getAuthority(), rawAuthority));
+	}
 
-    private Jwt getJwt() {
-        Authentication authentication = getAuthentication();
-        if (authentication.getPrincipal() instanceof Jwt jwt) {
-            return jwt;
-        }
-        throw new IllegalStateException("Authentication principal is not a JWT");
-    }
+	private Jwt getJwt() {
+		Authentication authentication = getAuthentication();
+		if (authentication.getPrincipal() instanceof Jwt jwt) {
+			return jwt;
+		}
+		throw new IllegalStateException("Authentication principal is not a JWT");
+	}
 
-    private Authentication getAuthentication() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null) {
-            throw new IllegalStateException("No authentication found");
-        }
-        return authentication;
-    }
+	private Authentication getAuthentication() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (authentication == null) {
+			throw new IllegalStateException("No authentication found");
+		}
+		return authentication;
+	}
 }

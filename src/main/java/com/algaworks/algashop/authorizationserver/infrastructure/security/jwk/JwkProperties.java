@@ -11,8 +11,8 @@ import org.springframework.validation.annotation.Validated;
 @Component
 @ConfigurationProperties(prefix = "jwk")
 public class JwkProperties {
-    @NotBlank
-    private String privateKeyId;
-    @NotBlank
-    private String privateKey;
+	@NotBlank
+	private String privateKeyId;
+	@NotBlank
+	private String privateKey;
 }

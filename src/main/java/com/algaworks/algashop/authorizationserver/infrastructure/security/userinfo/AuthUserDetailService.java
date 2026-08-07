@@ -13,16 +13,16 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AuthUserDetailService implements UserDetailsService {
 
-    private final AuthUserRepository authUserRepository;
+	private final AuthUserRepository authUserRepository;
 
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        AuthUser authUser = authUserRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found " + email));
+	@Override
+	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+		AuthUser authUser = authUserRepository.findByEmail(email)
+				.orElseThrow(() -> new UsernameNotFoundException("User not found " + email));
 
-        return User.withUsername(email)
-                .password(authUser.getPassword())
-                .disabled(authUser.isDisabled())
-                .build();
-    }
+		return User.withUsername(email)
+				.password(authUser.getPassword())
+				.disabled(authUser.isDisabled())
+				.build();
+	}
 }

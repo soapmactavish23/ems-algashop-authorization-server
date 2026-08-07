@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class MyUserUpdateInput {
 
-    @NotBlank
-    private String name;
+	@NotBlank
+	private String name;
 
 }

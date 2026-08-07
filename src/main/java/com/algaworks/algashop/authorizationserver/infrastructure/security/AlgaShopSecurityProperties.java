@@ -20,43 +20,43 @@ import java.util.List;
 @NoArgsConstructor
 public class AlgaShopSecurityProperties {
 
-    @NotBlank
-    private String defaultRedirectUri;
+	@NotBlank
+	private String defaultRedirectUri;
 
-    @NotNull
-    @Valid
-    private CorsProperties cors;
+	@NotNull
+	@Valid
+	private CorsProperties cors;
 
-    @NotNull
-    @Valid
-    private CookieProperties cookie;
+	@NotNull
+	@Valid
+	private CookieProperties cookie;
 
-    @NotNull
-    @Valid
-    private CspProperties csp;
+	@NotNull
+	@Valid
+	private CspProperties csp;
 
-    @Data
-    @NoArgsConstructor
-    public static class CorsProperties {
-        @NotEmpty
-        private List<String> allowedOrigins = new ArrayList<>();
-    }
+	@Data
+	@NoArgsConstructor
+	public static class CorsProperties {
+		@NotEmpty
+		private List<String> allowedOrigins = new ArrayList<>();
+	}
 
-    @Data
-    @NoArgsConstructor
-    public static class CookieProperties {
-        @NotBlank
-        private String sameSite;
-        @NotBlank
-        private String domainName;
-        @NotNull
-        private Boolean secure;
-    }
+	@Data
+	@NoArgsConstructor
+	public static class CookieProperties {
+		@NotBlank
+		private String sameSite;
+		@NotBlank
+		private String domainName;
+		@NotNull
+		private Boolean secure;
+	}
 
-    @Data
-    @NoArgsConstructor
-    public static class CspProperties {
-        private String policyDirectives;
-    }
+	@Data
+	@NoArgsConstructor
+	public static class CspProperties {
+		private String policyDirectives;
+	}
 
 }

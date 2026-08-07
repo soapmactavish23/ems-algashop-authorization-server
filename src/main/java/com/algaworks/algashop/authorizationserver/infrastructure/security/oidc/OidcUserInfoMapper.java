@@ -12,22 +12,22 @@ import java.util.function.Function;
 
 @Component
 public class OidcUserInfoMapper
-        implements Function<OidcUserInfoAuthenticationContext, OidcUserInfo> {
+		implements Function<OidcUserInfoAuthenticationContext, OidcUserInfo> {
 
-    @Override
-    public OidcUserInfo apply(OidcUserInfoAuthenticationContext context) {
-        OAuth2Authorization authorization = context.getAuthorization();
-        var idTokenHolder = authorization.getToken(OidcIdToken.class);
-        if (idTokenHolder == null) {
-            Authentication authentication = context.getAuthentication();
-            JwtAuthenticationToken principal = (JwtAuthenticationToken) authentication.getPrincipal();
-            if (principal == null || principal.getToken() == null) {
-                throw new IllegalArgumentException();
-            }
-            return OidcUserInfo.builder()
-                    .claim("sub", principal.getToken().getClaims().get("sub"))
-                    .build();
-        }
-        return new OidcUserInfo(idTokenHolder.getClaims());
-    }
+	@Override
+	public OidcUserInfo apply(OidcUserInfoAuthenticationContext context) {
+		OAuth2Authorization authorization = context.getAuthorization();
+		var idTokenHolder = authorization.getToken(OidcIdToken.class);
+		if (idTokenHolder == null) {
+			Authentication authentication = context.getAuthentication();
+			JwtAuthenticationToken principal = (JwtAuthenticationToken) authentication.getPrincipal();
+			if (principal == null || principal.getToken() == null) {
+				throw new IllegalArgumentException();
+			}
+			return OidcUserInfo.builder()
+					.claim("sub", principal.getToken().getClaims().get("sub"))
+					.build();
+		}
+		return new OidcUserInfo(idTokenHolder.getClaims());
+	}
 }

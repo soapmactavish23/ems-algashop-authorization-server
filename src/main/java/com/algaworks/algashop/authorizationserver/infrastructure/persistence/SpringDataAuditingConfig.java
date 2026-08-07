@@ -30,7 +30,7 @@ public class SpringDataAuditingConfig {
             if (!securityCheck.isAuthenticated() || securityCheck.isMachineAuthenticated()) {
                 return Optional.empty();
             }
-            return Optional.of(securityCheck.getAuthenticatedUserId());
+	        return Optional.of(securityCheck.getAuthenticatedUserId());
         };
     }
 
