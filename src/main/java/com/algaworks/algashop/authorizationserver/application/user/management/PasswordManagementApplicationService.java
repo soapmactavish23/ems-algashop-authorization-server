@@ -7,22 +7,23 @@ import com.algaworks.algashop.authorizationserver.domain.model.user.AuthUser;
 import com.algaworks.algashop.authorizationserver.domain.model.user.AuthUserPasswordManager;
 import com.algaworks.algashop.authorizationserver.domain.model.user.AuthUserRepository;
 import com.algaworks.algashop.authorizationserver.domain.model.user.VerificationTokenHasher;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
+@Transactional
 public class PasswordManagementApplicationService {
 
     private final AuthUserRepository authUserRepository;
     private final UserAccountProperties userAccountProperties;
     private final AuthUserPasswordManager passwordManager;
     private final VerificationTokenHasher tokenHasher;
+
     private final AuthUserMailSender authUserMailSender;
 
     public void changePasswordWithToken(String plainToken, String newPlainPassword) {

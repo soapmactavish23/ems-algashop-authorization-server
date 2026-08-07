@@ -94,7 +94,7 @@ public class OAuth2SecurityChecksImpl
             if (getAuthenticatedUserId().equals(editUserId)) {
                 return true;
             }
-        } catch (AccessDeniedException exception) {
+        } catch (AccessDeniedException e) {
             return false;
         }
 

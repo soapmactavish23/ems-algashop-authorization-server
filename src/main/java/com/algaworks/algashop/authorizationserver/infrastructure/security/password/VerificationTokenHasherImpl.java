@@ -19,8 +19,8 @@ public class VerificationTokenHasherImpl implements VerificationTokenHasher {
     @Override
     @SneakyThrows
     public String hash(String plainToken) {
-        MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
-        byte[] hash = messageDigest.digest(plainToken.getBytes(StandardCharsets.UTF_8));
+        MessageDigest messageHasher = MessageDigest.getInstance("SHA-256");
+        byte[] hash = messageHasher.digest(plainToken.getBytes(StandardCharsets.UTF_8));
         return Base64.getUrlEncoder().withoutPadding().encodeToString(hash);
     }
 

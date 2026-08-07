@@ -24,6 +24,6 @@ public class AuthUserPasswordManagerImpl implements AuthUserPasswordManager {
 
     @Override
     public boolean matches(String encryptedPassword, String plainPassword) {
-        return passwordEncoder.matches(encryptedPassword, plainPassword);
+        return passwordEncoder.matches(plainPassword, encryptedPassword);
     }
 }

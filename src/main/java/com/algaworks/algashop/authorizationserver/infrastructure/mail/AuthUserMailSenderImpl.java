@@ -23,33 +23,37 @@ public class AuthUserMailSenderImpl implements AuthUserMailSender {
     private final JavaMailSender javaMailSender;
     private final UserAccountProperties properties;
 
-    @Async
     @Override
+    @Async
     public void sendActivationEmail(AuthUser user, String token) {
         String subject = "AlgaShop - Active your account";
         String formatedDuration = formatDuration(properties.getToken().getActivationTtl());
         URI link = buildLink(token);
+
         String body = """
-                Hello %s,
-                Use the link bellow to set your password and active your account:
-                %s
-                This link expires in %s
-                """.formatted(user.getName(), link, formatedDuration);
+				Hello %s,
+				Use the link bellow to set your password and activate your account:
+				%s
+				This link expires in %s.
+				""".formatted(user.getName(), link, formatedDuration);
+
         send(user.getEmail(), subject, body);
     }
 
-    @Async
     @Override
+    @Async
     public void sendPasswordChangeEmail(AuthUser user, String token) {
-        String subject = "AlgaShop - Password Change";
+        String subject = "AlgaShop - Password change";
         String formatedDuration = formatDuration(properties.getToken().getActivationTtl());
         URI link = buildLink(token);
+
         String body = """
-                Hello %s,
-                Use the link bellow to set your password:
-                %s
-                This link expires in %s
-                """.formatted(user.getName(), link, formatedDuration);
+				Hello %s,
+				Use the link bellow to set your password:
+				%s
+				This link expires in %s.
+				""".formatted(user.getName(), link, formatedDuration);
+
         send(user.getEmail(), subject, body);
     }
 
@@ -62,8 +66,8 @@ public class AuthUserMailSenderImpl implements AuthUserMailSender {
 
     private String formatDuration(Duration duration) {
         long hours = duration.toHours();
-        if(hours > 0) {
-            return hours + " hours(s)";
+        if (hours > 0) {
+            return hours + " hour(s)";
         }
         return duration.toMinutes() + " minute(s)";
     }
@@ -71,6 +75,7 @@ public class AuthUserMailSenderImpl implements AuthUserMailSender {
     private void send(String to, String subject, String body) {
         try {
             log.info("Sending email to {} subject '{}'", to, subject);
+
             MimeMessage message = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, false, "UTF-8");
 
@@ -80,6 +85,7 @@ public class AuthUserMailSenderImpl implements AuthUserMailSender {
             helper.setText(body, false);
 
             javaMailSender.send(message);
+
         } catch (Exception e) {
             log.error("Erro when sending email to {}: {}", to, e.getMessage(), e);
         }

@@ -16,21 +16,19 @@ public class ScopePolicyService {
     private final AuthUserClientScopesQueryService scopesQueryService;
 
     public Set<String> resolveScopes(AuthUserType role, String clientId, Set<String> authorizedScopes) {
-        if(authorizedScopes.isEmpty()) {
+        if (authorizedScopes.isEmpty()) {
             return new HashSet<>();
         }
 
         Set<String> allowedScopes = scopesQueryService.findAllowedScopesByRoleAndClientId(role, clientId);
 
-        if(authorizedScopes.isEmpty()) {
+        if (allowedScopes.isEmpty()) {
             return new HashSet<>(authorizedScopes);
         }
 
         return authorizedScopes.stream()
                 .filter(allowedScopes::contains)
                 .collect(Collectors.toSet());
-
     }
-
 
 }

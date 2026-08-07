@@ -63,12 +63,15 @@ public class AuthUser extends AbstractAuditableAggregateRoot<AuthUser> {
         return plainToken;
     }
 
-    public void changePasswordWithToken(String plainToken, String plainPassword,
-                                        AuthUserPasswordManager passwordManager, VerificationTokenHasher tokenHasher) {
+    public void changePasswordWithToken(String plainToken,
+                                        String plainPassword,
+                                        AuthUserPasswordManager passwordManager,
+                                        VerificationTokenHasher tokenHasher
+    ) {
         verifyToken(plainToken, tokenHasher);
         setPassword(passwordManager.encrypt(plainPassword));
         cleanVerificationToken();
-        if(!isEmailVerified()) {
+        if (!isEmailVerified()) {
             setEmailVerified(true);
         }
     }
@@ -103,17 +106,17 @@ public class AuthUser extends AbstractAuditableAggregateRoot<AuthUser> {
     }
 
     private void verifyToken(String plainToken, VerificationTokenHasher tokenHasher) {
-        if(!tokenHasher.isEqual(this.verificationToken, plainToken)) {
+        if (!tokenHasher.isEqual(this.verificationToken, plainToken)) {
             throw new IllegalArgumentException("Invalid token");
         }
 
-        if(isTokenExpired()) {
-            throw new IllegalArgumentException("Token has expired");
+        if (isTokenExpired()) {
+            throw new IllegalStateException("Token has expired");
         }
     }
 
     private boolean isTokenExpired() {
-        if(verificationTokenExpirationDate == null) {
+        if (verificationTokenExpirationDate == null) {
             return true;
         }
         return OffsetDateTime.now().isAfter(verificationTokenExpirationDate);

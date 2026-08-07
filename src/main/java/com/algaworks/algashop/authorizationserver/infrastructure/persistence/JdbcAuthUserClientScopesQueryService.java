@@ -11,16 +11,16 @@ import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
-public class JdbcAuthUserClientScopesQueryService  implements AuthUserClientScopesQueryService {
+public class JdbcAuthUserClientScopesQueryService implements AuthUserClientScopesQueryService {
 
     private final JdbcOperations jdbcOperations;
 
     private static final String SQL = """
-            SELECT scope
-            FROM auth_user_type_client_scope
-            WHERE auth_user_type = ?
-            AND client_id = ?
-            """;
+			SELECT scope
+			FROM auth_user_type_client_scope
+			WHERE auth_user_type = ?
+			AND client_id = ?
+			""";
 
     @Override
     public Set<String> findAllowedScopesByRoleAndClientId(AuthUserType role, String clientId) {

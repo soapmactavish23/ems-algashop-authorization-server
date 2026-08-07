@@ -14,10 +14,10 @@ import java.util.Set;
 public class JdbcClientAllowedQueryService implements ClientAllowedQueryService {
 
     private static final String SQL = """
-            SELECT client_id
-            FROM auth_user_type_client_allowed
-            WHERE auth_user_type = ?
-            """;
+			SELECT client_id
+			FROM auth_user_type_client_allowed
+			WHERE auth_user_type = ?
+			""";
 
     private final JdbcOperations jdbcOperations;
 
