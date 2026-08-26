@@ -124,6 +124,11 @@ public class OAuth2SecurityChecksImpl
 		return false;
 	}
 
+	@Override
+	public boolean canViewUser(AuthUserType viewType, UUID viewUserId) {
+		return canEditUser(viewType, viewUserId);
+	}
+
 	private boolean hasAuthority(String rawAuthority) {
 		Authentication authentication;
 		try {

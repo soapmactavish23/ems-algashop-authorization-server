@@ -12,4 +12,5 @@ public interface SecurityChecks {
 	boolean canRegisterUserOfType(AuthUserType registrationType);
 	boolean canEditUser(AuthUserType editType, UUID editUserId);
 	boolean canChangeUserType(AuthUserType currentType, AuthUserType newType);
+    boolean canViewUser(AuthUserType editType, UUID editUserId);
 }
