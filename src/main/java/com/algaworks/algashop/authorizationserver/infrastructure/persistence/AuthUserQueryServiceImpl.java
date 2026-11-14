@@ -32,7 +32,7 @@ public class AuthUserQueryServiceImpl implements AuthUserQueryService {
 	public AuthUserOutput findById(UUID userId) {
 		return authUserRepository.findById(userId)
 				.flatMap(authUser -> {
-					if(!securityChecks.canViewUser(authUser.getType(), authUser.getId())) {
+					if (!securityChecks.canViewUser(authUser.getType(), authUser.getId())) {
 						throw new AccessDeniedException("Cannot view user of type " + authUser.getType());
 					}
 					return Optional.of(authUser);
@@ -106,9 +106,9 @@ public class AuthUserQueryServiceImpl implements AuthUserQueryService {
 	}
 
 	private Order toSortOrder(CriteriaBuilder builder, Root<AuthUser> root, AuthUserFilter filter) {
-		return filter.getDirection().isAscending()
-				? builder.asc(root.get(filter.getSort()))
-				: builder.desc(root.get(filter.getSort()));
+		return filter.getSortDirection().isAscending()
+				? builder.asc(root.get(filter.getSortByProperty().toLowerCase()))
+				: builder.desc(root.get(filter.getSortByProperty().toLowerCase()));
 	}
 
 }

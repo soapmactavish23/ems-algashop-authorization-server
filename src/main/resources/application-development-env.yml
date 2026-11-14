@@ -61,8 +61,12 @@ spring:
                 - shopping-carts:write
                 - users:read
                 - users:write
+                - emails:send
+                - email-templates:read
+                - email-templates:write
+                - metrics:read
             token:
-              access-token-time-to-live: 15m
+              access-token-time-to-live: 1h
               access-token-format: self-contained # JWT
           algashop-ordering-service-client:
             registration:
@@ -75,7 +79,22 @@ spring:
               scopes:
                 - products:read
             token:
-              access-token-time-to-live: 5m
+              access-token-time-to-live: 1h
+              access-token-format: self-contained # JWT
+          algashop-notifications-service-client:
+            registration:
+              client-id: algashop-notifications-service
+              authorization-grant-types:
+                - client_credentials
+              client-authentication-methods:
+                - client_secret_basic
+              client-secret: ${auth.params.clients.algashop-notifications-service.secret}
+              scopes:
+                - emails:send
+                - email-templates:read
+                - email-templates:write
+            token:
+              access-token-time-to-live: 1h
               access-token-format: self-contained # JWT
           algashop-ecommerce-web-client:
             registration:
@@ -103,7 +122,7 @@ spring:
             require-authorization-consent: false
             require-proof-key: false #PKCE
             token:
-              access-token-time-to-live: 5m
+              access-token-time-to-live: 1h
               authorization-code-time-to-live: 10m
               refresh-token-time-to-live: 1h
               reuse-refresh-tokens: false
@@ -121,7 +140,7 @@ spring:
                 - users:write
                 - shipping-costs:preview
             token:
-              access-token-time-to-live: 15m
+              access-token-time-to-live: 1h
           algashop-admin-web-client:
             registration:
               client-id: algashop-admin-web
@@ -144,12 +163,13 @@ spring:
                 - shopping-carts:read
                 - users:read
                 - users:write
+                - metrics:read
                 - openid
             require-authorization-consent: false
             require-proof-key: true #PKCE
             token:
-              access-token-time-to-live: 5m
-              authorization-code-time-to-live: 2m
+              access-token-time-to-live: 1h
+              authorization-code-time-to-live: 5m
 
 algashop:
   user-account:
